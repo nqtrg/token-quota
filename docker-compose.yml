@@ -1,0 +1,13 @@
+version: "3"
+services:
+  redis_server:
+    image: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - ./redisdata:/data
+    networks:
+      - backend
+
+networks:
+    backend:
