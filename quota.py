@@ -38,7 +38,13 @@ class Quota(object):
         return False
 
     def _update_quota(self, key, left_tokens, period_started_at):
-        # TODO
+        self.redis_bucket.set(key, json.dumps(
+                {
+                    "tokens": 700,
+                    "subcription": "FREE_TIER",
+                    "period_started_at": "2021-01-23T18:25:43.511Z"
+                }
+            ))
 
     def _get_max_token(self, key):
         # the maxium number of tokens of user. E.g: free user -> 100, premium -> 10000

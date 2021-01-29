@@ -5,10 +5,12 @@ seed_data = {
     # key: [tokens, period_started_at]
     "nqtrg": {
         "tokens": 1000,
+        "subcription": "FREE_TIER",
         "period_started_at": "2021-01-23T18:25:43.511Z"
     },
     "limmie": {
         "tokens": 700,
+        "subcription": "FREE_TIER",
         "period_started_at": "2021-01-23T18:25:43.511Z"
     },
 }
