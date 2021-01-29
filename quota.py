@@ -1,5 +1,7 @@
 from datetime import datetime
 
+import redis
+
 BILLING_PERIOD = '1m'
 
 MAX_TOKENS = {
@@ -9,9 +11,9 @@ MAX_TOKENS = {
 }
 
 class Quota(object):
-    def __init__(self, redis_connection_str):
+    def __init__(self, redis_host: str, redis_port: int):
         self.redis_connection_str = redis_connection_str
-        # TODO: do some connection stuff here
+        self.redis_bucket = redis.Redis(host=redis_host, port=redis_port, db=0)
 
 
     def is_qualified(self, key: str, num_tokens: int=1) -> bool:
