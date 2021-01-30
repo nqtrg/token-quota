@@ -2,13 +2,15 @@ from datetime import datetime
 
 import redis
 
-BILLING_PERIOD = '1m'
+BILLING_PERIOD = '1m'  # 1 month
 
-MAX_TOKENS = {
-    "FREE_TIER": 100,
-    "PREMIUM": 10000,
-    "ENTERPRISE": 1000000
-}
+# MAX_TOKENS = {
+#     "FREE_TIER": 100,
+#     "PREMIUM": 10000,
+#     "ENTERPRISE": 1000000
+# }
+
+MAX_TOKENS = 3
 
 class Quota(object):
     def __init__(self, redis_host: str, redis_port: int):
@@ -23,7 +25,7 @@ class Quota(object):
             # reset token
             self._reset_quota(key)
             # get left token
-            left_tokens = self._get_max_token(key)
+            left_tokens = MAX_TOKENS
 
         else:
             # get left token
@@ -40,16 +42,10 @@ class Quota(object):
     def _update_quota(self, key, left_tokens, period_started_at):
         self.redis_bucket.set(key, json.dumps(
                 {
-                    "tokens": 700,
-                    "subcription": "FREE_TIER",
-                    "period_started_at": "2021-01-23T18:25:43.511Z"
+                    "tokens": left_tokens,
+                    "period_started_at": period_started_at
                 }
             ))
-
-    def _get_max_token(self, key):
-        # the maxium number of tokens of user. E.g: free user -> 100, premium -> 10000
-        pass
-
 
     def _get_token_count(self, key):
         pass
