@@ -1,8 +1,10 @@
 import json
 from datetime import datetime, timezone
 
+from config import DATETIME_FMT
+
 datetime_now = datetime.now(timezone.utc)
-DATETIME_FMT = '%d/%m/%y %H:%M:%S.%f%z'
+
 
 seed_data = {
     # key: [tokens, period_started_at]
