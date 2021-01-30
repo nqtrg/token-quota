@@ -2,15 +2,8 @@ from datetime import datetime
 
 import redis
 
-BILLING_PERIOD = '1m'  # 1 month
+from config import DATETIME_FMT, BILLING_PERIOD, MAX_TOKENS
 
-# MAX_TOKENS = {
-#     "FREE_TIER": 100,
-#     "PREMIUM": 10000,
-#     "ENTERPRISE": 1000000
-# }
-
-MAX_TOKENS = 3
 
 class Quota(object):
     def __init__(self, redis_host: str, redis_port: int):
@@ -18,9 +11,10 @@ class Quota(object):
         self.redis_bucket = redis.Redis(host=redis_host, port=redis_port, db=0)
 
 
-    def is_qualified(self, key: str, num_tokens: int=1) -> bool:
-        latest_period_started_at = self._get_deserved_period_started_at(key)
+    def is_qualified(self, key: str: str, num_tokens: int=1) -> bool:
         period_started_at = self._get_period_started_at(key)
+        latest_period_started_at = self._get_deserved_period_started_at(period_started_at)
+
         if latest_period_started_at != period_started_at:
             # reset token
             self._reset_quota(key)
@@ -29,7 +23,7 @@ class Quota(object):
 
         else:
             # get left token
-            left_tokens = self._get_token_count(key)
+            left_tokens = self._get_left_token(key)
 
         if left_tokens > num_tokens:
             left_tokens = left_tokens - num_tokens
@@ -39,7 +33,7 @@ class Quota(object):
 
         return False
 
-    def _update_quota(self, key, left_tokens, period_started_at):
+    def _update_quota(self, key: str, left_tokens, period_started_at):
         self.redis_bucket.set(key, json.dumps(
                 {
                     "tokens": left_tokens,
@@ -47,14 +41,22 @@ class Quota(object):
                 }
             ))
 
-    def _get_token_count(self, key):
+    def _get_left_token(self, key: str):
+        # Get left token
+        result_json = self.redis_bucket.get(key)
+        result = json.loads(result_json)
+        return result['tokens']
+
+    def _get_deserved_period_started_at(self, period_started_at):
+        current_ts = datetime.now()
+        abs((d2 - d1).months) > 1
+
         pass
 
-    def _get_deserved_period_started_at(self, key):
-        pass
+    def _get_period_started_at(self, key: str) -> datetime:
+        result_json = self.redis_bucket.get(key)
+        result = json.loads(result_json)
+        return datetime.strptime(result['period_started_at'], DATETIME_FMT)
 
-    def _get_period_started_at(self, key):
-        pass
-
-    def _reset_quota(self, key):
+    def _reset_quota(self, key: str):
         pass

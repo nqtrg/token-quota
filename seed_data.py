@@ -30,6 +30,8 @@ for key in seed_data:
 result_json = r.get('nqtrg')
 result = json.loads(result_json)
 assert(result['tokens'] == 1000)
+print(result['period_started_at'])
 print(datetime.strptime(result['period_started_at'], DATETIME_FMT))
 print(datetime_now)
+print(type(datetime_now))
 assert datetime.strptime(result['period_started_at'], DATETIME_FMT) == datetime_now
