@@ -1,18 +1,21 @@
 import json
+from datetime import datetime, timezone
 
+datetime_now = datetime.now(timezone.utc)
+DATETIME_FMT = '%d/%m/%y %H:%M:%S.%f%z'
 
 seed_data = {
     # key: [tokens, period_started_at]
     "nqtrg": {
         "tokens": 1000,
         "subcription": "FREE_TIER",
-        "period_started_at": "2021-01-23T18:25:43.511Z"
+        "period_started_at": datetime.strftime(datetime_now, DATETIME_FMT)
     },
-    "limmie": {
-        "tokens": 700,
-        "subcription": "FREE_TIER",
-        "period_started_at": "2021-01-23T18:25:43.511Z"
-    },
+    # "limmie": {
+    #     "tokens": 700,
+    #     "subcription": "FREE_TIER",
+    #     "period_started_at": "2021-01-23T18:25:43.511Z"
+    # },
 }
 
 import redis
@@ -25,4 +28,6 @@ for key in seed_data:
 result_json = r.get('nqtrg')
 result = json.loads(result_json)
 assert(result['tokens'] == 1000)
-assert(result['period_started_at'] == "2021-01-23T18:25:43.511Z")
+print(datetime.strptime(result['period_started_at'], DATETIME_FMT))
+print(datetime_now)
+assert datetime.strptime(result['period_started_at'], DATETIME_FMT) == datetime_now
